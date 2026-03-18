@@ -1,0 +1,45 @@
+name: Check Visa Appointments
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore state cache
+        uses: actions/cache@v4
+        with:
+          path: state.txt
+          key: visa-state
+          restore-keys: |
+            visa-state
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check appointments
+        env:
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          CALLMEBOT_PHONE: ${{ secrets.CALLMEBOT_PHONE }}
+          CALLMEBOT_APIKEY: ${{ secrets.CALLMEBOT_APIKEY }}
+        run: python check_visa.py
+
+      - name: Save state cache
+        if: always()
+        uses: actions/cache@v4
+        with:
+          path: state.txt
+          key: visa-state
