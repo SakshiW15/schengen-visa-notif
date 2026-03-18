@@ -7,6 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 
 URL = "https://schengenappointments.com/in/london/netherlands/tourism"
+BOOKING_URL = "https://visa.vfsglobal.com/gbr/en/nld/login"
 STATE_FILE = "state.txt"
 NO_APPOINTMENTS_TEXT = "No appointments available"
 
@@ -51,8 +52,9 @@ def send_email(status):
     app_password = os.environ["GMAIL_APP_PASSWORD"]
 
     msg = MIMEText(
-        f"Appointment status: {status}\n"
-        f"Check now: {URL}"
+        f"Appointment status: {status}\n\n"
+        f"Check availability: {URL}\n"
+        f"Book now: {BOOKING_URL}"
     )
     msg["Subject"] = "\U0001f1f3\U0001f1f1 Netherlands Visa Slot Alert!"
     msg["From"] = gmail_address
@@ -70,7 +72,7 @@ def send_whatsapp(status):
     phone = os.environ["CALLMEBOT_PHONE"]
     apikey = os.environ["CALLMEBOT_APIKEY"]
 
-    message = f"Netherlands Visa: {status} - {URL}"
+    message = f"Netherlands Visa: {status} - Check: {URL} - Book: {BOOKING_URL}"
     encoded_message = urllib.parse.quote(message)
 
     api_url = (
