@@ -91,7 +91,7 @@ def main():
     last_state = read_last_state()
     print(f"Last state: {last_state!r}")
 
-    appointments_available = NO_APPOINTMENTS_TEXT not in status
+    appointments_available = True  # TEMP: force notification for testing
 
     if appointments_available:
         if last_state != status:
